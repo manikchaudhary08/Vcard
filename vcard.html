@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Will You Be My Valentine? ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: url('https://www.psdgraphics.com/wp-content/uploads/2022/01/white-math-paper-texture.jpg');
+            background-size: 1000px;
+            background-position: center;
+            padding: 20px;
+            font-family: 'Sacramento', cursive;
+        }
+
+        /* Proposal Page Styles */
+        .proposal-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 192, 203, 0.1);
+            z-index: 2000;
+        }
+
+        .proposal-page.hidden {
+            display: none;
+        }
+
+        .proposal-text {
+            font-size: 48px;
+            color: #ff1493;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 40px;
+        }
+
+        .choice-btn {
+            padding: 15px 40px;
+            font-size: 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Sacramento', cursive;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .yes-btn {
+            background: #ff1493;
+            color: white;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .no-btn {
+            background: #f5f5f5;
+            color: #666;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .valentine-content {
+            display: none;
+        }
+
+        .valentine-content.visible {
+            display: block;
+        }
+
+        .paper {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 1px 15px 20px 0px rgba(0,0,0,0.2);
+            position: relative;
+            transition: transform 0.3s ease;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .paper:hover {
+            transform: translateY(-5px);
+        }
+
+        .paper.heart {
+            width: 250px;
+            height: 250px;
+            padding: 0;
+            border-radius: 50%;
+            margin: 20px auto;
+            grid-column: span 3;
+            justify-self: center;
+            min-height: auto;
+        }
+
+        .paper.heart::after {
+            content: "";
+            background-image: url('https://cdn.pixabay.com/photo/2016/03/31/19/25/cartoon-1294994__340.png');
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+        }
+
+        .paper.image {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: auto;
+            min-height: 400px; /* Increased to accommodate larger images */
+        }
+
+        .paper.image p {
+            font-size: 32px;
+            color: #ff1493;
+            line-height: 1.2;
+            margin: 0 0 15px 0;
+            height: auto;
+            text-align: center;
+            width: 100%;
+        }
+
+        .paper.image .img-container {
+            width: 100%;
+            height: 300px; /* Fixed height for consistency */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .paper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Changed to contain to maintain aspect ratio */
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .paper.message {
+            background: rgba(255,0,0,0.05);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .paper.message p {
+            font-size: 40px;
+            line-height: 1.4;
+            margin: 10px 0;
+        }
+
+        p {
+            font-family: 'Zeyada', cursive;
+            font-size: 35px;
+            color: rgb(0,0,100);
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .music-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #musicControl {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Short Stack', cursive;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        #musicControl:hover {
+            transform: scale(1.05);
+        }
+
+        .letter-container {
+            grid-column: span 3;
+            justify-self: center;
+            cursor: pointer;
+        }
+
+        .envelope {
+            background: #f5f5f5;
+            padding: 25px 40px;
+            width: 360px;
+            height: 85px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+
+        .letter-content {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 60px;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            max-width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            min-width: 400px;
+        }
+
+        .letter-content p {
+            font-size: 38px;
+            margin: 5px 0;
+        }
+
+        .letter-content.open {
+            display: block;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.open {
+            display: block;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #ff1493;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .paper.heart {
+                grid-column: span 2;
+            }
+            .letter-container {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .paper.heart {
+                grid-column: span 1;
+            }
+            .letter-container {
+                grid-column: span 1;
+            }
+            .paper {
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Proposal Page -->
+    <div class="proposal-page">
+        <h1 class="proposal-text">Will you be my Valentine? 🌹</h1>
+        <div class="button-container">
+            <button class="choice-btn yes-btn">Yes</button>
+            <button class="choice-btn no-btn">No</button>
+        </div>
+    </div>
+
+    <!-- Valentine Content -->
+    <div class="valentine-content">
+        <div class="container">
+            <!-- Heart paper -->
+            <div class="paper heart"></div>
+
+            <!-- Letter container -->
+            <div class="letter-container">
+                <div class="envelope">
+                    <p style="margin: 0;">Open Letter ❤️</p>
+                </div>
+            </div>
+
+            <!-- Image papers -->
+            <div class="paper image">
+                <p>Our First picture together...🦋🦋</p>
+                <img src="C:/Users/manik/Desktop/Vcard/img2.jpg" alt="Your Photo 1" />
+            </div>
+
+            <div class="paper message">
+                <p>Yipeeeeeee!!</p>
+                <p>🥰🥹❤️</p>
+            </div>
+
+            <div class="paper image">
+                <p>You stole my heart ❤️</p>
+                <img src="C:/Users/manik/Desktop/Vcard/img3.jpg" alt="Your Photo 2" />
+            </div>
+
+            <div class="paper message">
+                <p>My Pyaaru Penguin 🐧</p>
+                <p>I love how you hold my arm when we walk together 🥺</p>
+            </div>
+
+            <div class="paper image">
+                <p>The way you look at me 🥺🥺</p>
+                <img src="C:/Users/manik/Desktop/Vcard/img1.jpg" alt="Your Photo 3" />
+            </div>
+
+            <div class="paper message">
+                <p>I love how you wake me up like a baby</p>
+                <p>Uthjaoo uthjaoo... 🥹</p>
+            </div>
+        </div>
+
+        <!-- Letter content -->
+        <div class="overlay"></div>
+        <div class="letter-content">
+            <button class="close-button">×</button>
+            <p>Dear Bubu,</p>
+            <br>
+            <p>From the moment I met you,</p>
+            <p>I just keep falling in love with you over and over.</p>
+            <br>
+            <p>Every smile, every laugh,</p>
+            <p>every moment we share</p>
+            <p>makes my heart skip a beat.</p>
+            <br>
+            <p>You are the strongest the prettiest the hotest</p>
+            <p>the most lovable person I've ever seen</p>
+            <br>
+            <p>Will you be mine?</p>
+            <p>(I hope yes 🥺)</p>
+            <br>
+            <p>Forever yours,</p>
+            <p>Your Dudu</p>
+        </div>
+
+        <!-- Music player -->
+        <div class="music-player">
+            <audio id="backgroundMusic" loop>
+                <source src="C:/Users/manik/Desktop/Vcard/audio.mp3" type="audio/mpeg">
+            </audio>
+            <button id="musicControl">🎵 Play Music</button>
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('backgroundMusic');
+        const musicBtn = document.getElementById('musicControl');
+        let isPlaying = false;
+
+        music.addEventListener('error', (e) => {
+            console.error('Error loading audio:', e);
+            musicBtn.textContent = '❌ Audio Failed to Load';
+            musicBtn.style.backgroundColor = '#ffeded';
+            musicBtn.disabled = true;
+        });
+
+        music.addEventListener('loadstart', () => {
+            musicBtn.textContent = '⌛ Loading...';
+        });
+
+        music.addEventListener('canplaythrough', () => {
+            musicBtn.textContent = '🎵 Play Music';
+            musicBtn.disabled = false;
+        });
+
+        async function toggleMusic() {
+            try {
+                if (isPlaying) {
+                    await music.pause();
+                    musicBtn.textContent = '🎵 Play Music';
+                } else {
+                    await music.play();
+                    musicBtn.textContent = '🎵 Pause Music';
+                }
+                isPlaying = !isPlaying;
+            } catch (err) {
+                console.error('Playback failed:', err);
+                musicBtn.textContent = '❌ Playback Failed';
+                musicBtn.style.backgroundColor = '#ffeded';
+                setTimeout(() => {
+                    musicBtn.textContent = '🎵 Play Music';
+                    musicBtn.style.backgroundColor = 'rgba(255,255,255,0.9)';
+                    isPlaying = false;
+                }, 2000);
+            }
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+
+        const envelope = document.querySelector('.envelope');
+        const letterContent = document.querySelector('.letter-content');
+        const overlay = document.querySelector('.overlay');
+        const closeButton = document.querySelector('.close-button');
+
+        envelope.addEventListener('click', () => {
+            letterContent.classList.add('open');
+            overlay.classList.add('open');
+        });
+
+        function closeLetter() {
+            letterContent.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+
+        closeButton.addEventListener('click', closeLetter);
+        overlay.addEventListener('click', closeLetter);
+
+        // Proposal page interaction
+        const noBtn = document.querySelector('.no-btn');
+        
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            // Ensure button stays within viewport
+            const boundedX = Math.min(Math.max(x, 0), window.innerWidth - noBtn.offsetWidth);
+            const boundedY = Math.min(Math.max(y, 0), window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = boundedX + 'px';
+            noBtn.style.top = boundedY + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton);
+
+        // Handle "Yes" button click
+        const yesBtn = document.querySelector('.yes-btn');
+        const proposalPage = document.querySelector('.proposal-page');
+        const valentineContent = document.querySelector('.valentine-content');
+
+        yesBtn.addEventListener('click', () => {
+            proposalPage.classList.add('hidden');
+            valentineContent.classList.add('visible');
+        });
+    </script>
+</body>
+</html>
